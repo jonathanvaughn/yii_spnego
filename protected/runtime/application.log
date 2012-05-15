@@ -1,0 +1,30 @@
+2012/05/14 14:40:29 [error] [exception.CException] exception 'CException' with message 'Property "CWebUser.enableKerberos" is not defined.' in /var/www/html/framework/base/CComponent.php:174
+Stack trace:
+#0 /var/www/html/framework/web/auth/CWebUser.php(155): CComponent->__set('enableKerberos', true)
+#1 /var/www/html/framework/YiiBase.php(222): CWebUser->__set('enableKerberos', true)
+#2 /var/www/html/framework/base/CModule.php(387): YiiBase::createComponent(Array)
+#3 /var/www/html/framework/base/CModule.php(104): CModule->getComponent('user')
+#4 /var/www/html/spnego/protected/views/layouts/main.php(34): CModule->__get('user')
+#5 /var/www/html/framework/web/CBaseController.php(127): require('/var/www/html/s...')
+#6 /var/www/html/framework/web/CBaseController.php(96): CBaseController->renderInternal('/var/www/html/s...', Array, true)
+#7 /var/www/html/framework/web/widgets/CContentDecorator.php(77): CBaseController->renderFile('/var/www/html/s...', Array, true)
+#8 /var/www/html/framework/web/widgets/CContentDecorator.php(55): CContentDecorator->decorate('<div id="conten...')
+#9 /var/www/html/framework/web/widgets/COutputProcessor.php(45): CContentDecorator->processOutput('<div id="conten...')
+#10 /var/www/html/framework/web/CBaseController.php(207): COutputProcessor->run()
+#11 /var/www/html/framework/web/CBaseController.php(301): CBaseController->endWidget('CContentDecorat...')
+#12 /var/www/html/spnego/protected/views/layouts/column1.php(5): CBaseController->endContent()
+#13 /var/www/html/framework/web/CBaseController.php(127): require('/var/www/html/s...')
+#14 /var/www/html/framework/web/CBaseController.php(96): CBaseController->renderInternal('/var/www/html/s...', Array, true)
+#15 /var/www/html/framework/web/CController.php(785): CBaseController->renderFile('/var/www/html/s...', Array, true)
+#16 /var/www/html/spnego/protected/controllers/SiteController.php(32): CController->render('index')
+#17 /var/www/html/framework/web/actions/CInlineAction.php(50): SiteController->actionIndex()
+#18 /var/www/html/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#19 /var/www/html/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#20 /var/www/html/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#21 /var/www/html/framework/web/CWebApplication.php(276): CController->run('')
+#22 /var/www/html/framework/web/CWebApplication.php(135): CWebApplication->runController('')
+#23 /var/www/html/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#24 /var/www/html/spnego/index.php(13): CApplication->run()
+#25 {main}
+REQUEST_URI=/spnego/
+---

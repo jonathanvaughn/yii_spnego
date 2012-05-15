@@ -15,13 +15,28 @@ class UserIdentity extends CUserIdentity
 	 * against some persistent user identity storage (e.g. database).
 	 * @return boolean whether authentication succeeds.
 	 */
-	public function authenticate()
+	public function authenticate($krb5=false)
 	{
+            if ($krb5 = true)
+            {
+                Yii::log('authenticate() : krb5 = true','info','system.web.CController');
+                if(!extension_loaded('krb5'))
+                {
+                    die('KRB5 Extension not installed but authenticate with krb5=true called anyway!');
+                }
+                
+                // Do some kind of DB lookup here? We're already authenticated, but not set if admin rights or such
+                $this->errorCode=self::ERROR_NONE;
+                return !$this->errorCode;
+            }
+            else
+            {
+                Yii::log('authenticate() : krb5 = false','info','system.web.CController');
 		$users=array(
 			// username => password
 			'demo'=>'demo',
 			'admin'=>'admin',
-		);
+		);             
 		if(!isset($users[$this->username]))
 			$this->errorCode=self::ERROR_USERNAME_INVALID;
 		else if($users[$this->username]!==$this->password)
@@ -29,5 +44,6 @@ class UserIdentity extends CUserIdentity
 		else
 			$this->errorCode=self::ERROR_NONE;
 		return !$this->errorCode;
+            }
 	}
 }

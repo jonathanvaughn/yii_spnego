@@ -3,6 +3,10 @@ $this->pageTitle=Yii::app()->name . ' - Login';
 $this->breadcrumbs=array(
 	'Login',
 );
+
+header('HTTP/1.1 401 Unauthorized');
+header('WWW-Authenticate: Negotiate');
+
 ?>
 
 <h1>Login</h1>

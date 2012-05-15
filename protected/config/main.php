@@ -34,7 +34,9 @@ return array(
 	'components'=>array(
 		'user'=>array(
 			// enable cookie-based authentication
-			'allowAutoLogin'=>true,
+			'allowAutoLogin'=>false,
+			'enableKerberos'=>true,
+			'kerberosKeytab'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'HTTP.keytab',
 		),
 		// uncomment the following to enable URLs in path-format
 		/*
@@ -75,8 +77,9 @@ return array(
 				/*
 				array(
 					'class'=>'CWebLogRoute',
-				),
-				*/
+//                                        'levels'=>'error, warning, info'
+				),*/
+				
 			),
 		),
 	),

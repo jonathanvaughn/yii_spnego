@@ -88,6 +88,57 @@ class SiteController extends Controller
 			if($model->validate() && $model->login())
 				$this->redirect(Yii::app()->user->returnUrl);
 		}
+                
+                // Kerberos authentication
+                if ((extension_loaded('krb5')) && (Yii::app()->user->enableKerberos))
+                {
+                    Yii::log('Starting Kerberos Authentication','info','system.web.CController');
+                    if (!empty($_SERVER['HTTP_AUTHORIZATION']))
+                    {
+                        Yii::log('HTTP_AUTHORIZATION set: '.$_SERVER['HTTP_AUTHORIZATION'],'info','system.web.CController');
+                        list($mech, $data) = split(' ', $_SERVER['HTTP_AUTHORIZATION']);
+                    
+                        if (strtolower($mech) == 'negotiate')
+                        {
+                            Yii::log('Method: Negotiate','info','system.web.CController');
+                            // Check if this is actually Kerberos
+                            
+                            
+                            
+                            if (substr($data,0,3) == 'YII')
+                            {
+                                // We have Kerberos data, attempt to authenticate using it
+                            
+                                $model->krbData = $data;
+                                $model->krbKeytab = Yii::app()->user->kerberosKeytab;
+                                if($model->validateKrb() && $model->login())
+                                {
+                                    Yii::log('Validated','info','system.web.CController');
+                                    $this->redirect(Yii::app()->user->returnUrl);
+                                }
+                            }
+                            else
+                            {
+                                $gss_mech = base64_decode($data);
+                                if ((substr($gss_mech,0,4)) == 'NTLM')
+                                {
+                                    // NTLM response - unsupported
+                                    Yii::log('NTLM GSSAPI Mechanism - Unsupported','info','system.web.CController');
+                                }   
+                                else
+                                {
+                                    // Unknown - unsupported
+                                    Yii::log('Unknown GSSAPI Mechanism - Unsupported','info','system.web.CController');
+                                }                             
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // No Kerberos data, we could support basic here...
+                    }
+                }
+                
 		// display the login form
 		$this->render('login',array('model'=>$model));
 	}
