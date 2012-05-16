@@ -10,11 +10,9 @@ class LoginForm extends CFormModel
 	public $username;
 	public $password;
 	public $rememberMe;
-        public $krbData;
-        public $krbKeytab;
 
 	private $_identity;
-
+        
 	/**
 	 * Declares the validation rules.
 	 * The rules state that username and password are required,
@@ -50,52 +48,26 @@ class LoginForm extends CFormModel
 	{
 		if(!$this->hasErrors())
 		{
-			$this->_identity=new UserIdentity($this->username,$this->password);
-			if(!$this->_identity->authenticate())
-				$this->addError('password','Incorrect username or password.');
+                    $this->_identity=new UserIdentity($this->username,$this->password);
+                    
+                    $errorCode = $this->_identity->authenticate();
+                    
+                    switch ($errorCode)
+                    {
+                        case UserIdentity::ERROR_USERNAME_INVALID: 
+                            $this->addError('password','Incorrect username or password.'); break;
+                        case UserIdentity::ERROR_PASSWORD_INVALID: 
+                            $this->addError('password','Incorrect username or password.'); break;
+                        case UserIdentity::ERROR_KRB5_KEYTAB: 
+                            $this->addError('password','Kerberos authentication error.'); 
+                            $this->username = ''; $this->password = ''; break;
+                        case UserIdentity::ERROR_KRB5_AUTH: 
+                            $this->addError('password','Kerberos authentication error.'); 
+                            $this->username = ''; $this->password = ''; break;
+                    }
 		}
 	}
         
-        /**
-         * Validates the Kerberos credentials 
-         */
-        public function validateKrb()
-        {
-                if(!extension_loaded('krb5'))
-                {
-                    die('KRB5 Extension not installed but validateKrb called anyway!');
-                }
-                Yii::log('Validating','info','system.web.CController');
-                $auth = new KRB5NegotiateAuth($this->krbKeytab);
-                
-                try {
-                    $reply = $auth->doAuthentication(base64_decode($this->krbData));
-                }
-                catch (Exception $e) 
-                {
-                    Yii::log('Caught exception '.$e->getMessage(),'info','system.web.CController');
-                }
-                
-                if ($reply)
-                {
-                    Yii::log('Authenticated as '.$auth->getAuthenticatedUser(),'info','system.web.CController');
-                    // Successful authentication
-                    $this->_identity=new UserIdentity($auth->getAuthenticatedUser(),'kerberos'); //FIXME: login from Kerberos
-                    if (!$this->_identity->authenticate($krb5 = true))
-                    {
-                                Yii::log('identity: '.$this->_identity->username,'info','system.web.CController');
-                                $this->addError('password','Incorrect Kerberos authentication');
-                                return 0;
-                    }
-                    else
-                    {
-                        return 1;
-                    }
-                }
-                
-                
-        }
-
 	/**
 	 * Logs in the user using the given username and password in the model.
 	 * @return boolean whether login is successful
