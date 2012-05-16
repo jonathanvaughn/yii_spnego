@@ -35,6 +35,8 @@ return array(
 		'user'=>array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>false,
+                        // Extend CWebUser for Kerberos authentication
+                        'class' => 'WebUser',
                         // enable Kerberos authentication (leave blank to disable)
 			'kerberosKeytab'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'HTTP.keytab',
 		),
